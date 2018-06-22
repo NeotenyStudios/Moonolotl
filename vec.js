@@ -7,5 +7,13 @@ module.exports = {
 	v2 : function(x, y) {
 		this.x = x;
 		this.y = y;
+		this.sub = function(vec) {
+			this.x -= vec.x;
+			this.y -= vec.y;
+		};
+		this.add = function(vec) {
+			this.x += vec.x;
+			this.y += vec.y;
+		};
 	},
 };
