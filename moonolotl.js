@@ -1,8 +1,8 @@
 "use strict";
 
-const	debug		= true;
-var		vec			= require('./vec.js');
-var		gameObject	= require('./gameObject.js');
+var		vec				= require('./vec.js');
+var		gameObject		= require('./gameObject.js');
+var		socketHandler	= require('./socketHandler.js')
 
 var engine = function(config) {
 	var that;
@@ -17,6 +17,7 @@ var engine = function(config) {
 	this.previousTick		= 0;
 	this.nbObjects			= 0;
 	this.layers				= {};
+	this.socketHandler		= new socketHandler(this);
 	that = this;
 	this.gameLoop			= function() {
 		var time = (new Date()).getTime();
@@ -31,8 +32,6 @@ var engine = function(config) {
 		else
 			setImmediate(this.gameLoop);
 	}.bind(that);
-	this.intro();
-	this.gameLoop(0);
 }
 
 engine.prototype.computeTick			= function() {
@@ -44,11 +43,19 @@ engine.prototype.computeObjectsMoves	= function() {
 		this.objects[index].computeMoves();
 }
 
-engine.prototype.intro					= function() {
+engine.createGameObject					= function(config) {
+	var ret = new gameObject(config);
+
+	this.gameObject.push(ret)
+	return (ret);
+}
+
+engine.prototype.displayIntro			= function() {
 	console.log("  /\\/\\   ___   ___  _ __   ___ | | ___ | |_| |");
 	console.log(" /    \\ / _ \\ / _ \\| '_ \\ / _ \\| |/ _ \\| __| |");
 	console.log("/ /\\/\\ \\ (_) | (_) | | | | (_) | | (_) | |_| |");
 	console.log("\\/    \\/\\___/ \\___/|_| |_|\\___/|_|\\___/ \\__|_|" + " v." + this.version);
+	console.log("Running on port " + this.socketHandler.port);
 };
 
 module.exports = engine;
